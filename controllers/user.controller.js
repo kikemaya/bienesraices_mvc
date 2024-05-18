@@ -1,16 +1,23 @@
 const formLogin = (req, res) => {
     res.render("auth/login", {
-        authenticated: true
+        page: "Login"
     });
 }
 
 const formRegister = (req, res) => {
     res.render("auth/register", {
+        page: "Create account"
+    });
+}
 
+const formForgotMyPassword = (req, res) => {
+    res.render("auth/forgot-my-password", {
+        page: "Recover your access to Real State"
     });
 }
 
 export {
     formLogin,
-    formRegister
+    formRegister,
+    formForgotMyPassword
 }

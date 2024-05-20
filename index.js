@@ -2,6 +2,16 @@ import express from "express";
 
 import userRoutes from "./routes/userRoutes.js";
 
+// DB connection
+import db from "./config/db.js";
+
+try {
+  await db.authenticate();
+  console.log("Successfully connected to the DB");
+} catch (error) {
+  console.log(error);
+}
+
 const app = express();
 const PORT = 3000;
 

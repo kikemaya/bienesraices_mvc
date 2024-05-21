@@ -15,6 +15,8 @@ const formRegister = (req, res) => {
 };
 
 const registerUser = async (req, res) => {
+  const { name, email, password } = req.body;
+
   await check("name")
     .notEmpty()
     .withMessage("Name value cannot be empty")
@@ -31,23 +33,46 @@ const registerUser = async (req, res) => {
     .run(req);
 
   await check("repeat_password")
-    .equals("password")
+    .equals(password)
     .withMessage("Passwords are not identical")
     .run(req);
 
   let result = validationResult(req);
 
+  console.log(result);
+
   if (!result.isEmpty()) {
     return res.render("auth/register", {
       page: "Create account",
       errores: result.array(),
+      user: {
+        name,
+        email,
+      },
     });
   }
 
-  res.json(result.array());
+  const userEmailExists = await User.findOne({
+    where: { email },
+  });
 
-  const user = await User.create(req.body);
-  res.status(201).json(user);
+  if (userEmailExists) {
+    return res.render("auth/register", {
+      page: "Create account",
+      errores: [{ msg: "This user is already registered..." }],
+      user: {
+        name,
+        email,
+      },
+    });
+  }
+
+  await User.create({
+    name,
+    email,
+    password,
+    token: 123,
+  });
 };
 
 const formForgotMyPassword = (req, res) => {

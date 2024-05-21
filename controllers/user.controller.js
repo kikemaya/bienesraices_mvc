@@ -75,6 +75,11 @@ const registerUser = async (req, res) => {
     password,
     token: generateUUID(),
   });
+
+  res.render("templates/message", {
+    page: "Account correctly created!",
+    message: "We have sent a confirmation email, press the link",
+  });
 };
 
 const formForgotMyPassword = (req, res) => {

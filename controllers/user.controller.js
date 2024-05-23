@@ -3,6 +3,7 @@ import { check, validationResult } from "express-validator";
 import User from "./../models/User.js";
 
 import { generateUUID } from "./../helpers/tokens.js";
+import { accountConfirmationEmail } from "../helpers/emails.js";
 
 const formLogin = (req, res) => {
   res.render("auth/login", {
@@ -69,11 +70,18 @@ const registerUser = async (req, res) => {
     });
   }
 
-  await User.create({
+  const user = await User.create({
     name,
     email,
     password,
     token: generateUUID(),
+  });
+
+  // Send confirmation email
+  accountConfirmationEmail({
+    name: user.name,
+    email: user.email,
+    token: user.token,
   });
 
   res.render("templates/message", {
